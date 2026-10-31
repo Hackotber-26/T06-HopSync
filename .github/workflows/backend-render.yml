@@ -1,0 +1,82 @@
+name: Backend checks and Render deploy
+
+on:
+  push:
+    branches: [new-stable]
+    paths:
+      - 'backend/**'
+      - 'render.yaml'
+      - '.github/workflows/backend-render.yml'
+  pull_request:
+    branches: [new-stable]
+    paths:
+      - 'backend/**'
+      - 'render.yaml'
+      - '.github/workflows/backend-render.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      NODE_ENV: test
+      PORT: '5001'
+      MONGO_URI: mongodb://127.0.0.1:27017/ridify_ci
+      JWT_SECRET: ci-only-access-secret-0123456789abcdef0123456789abcdef
+      JWT_REFRESH_SECRET: ci-only-refresh-secret-fedcba9876543210fedcba9876543210
+      ADMIN_SECRET: ci-only-admin-secret-0123456789abcdef0123456789abcdef
+      ADMIN_EMAILS: admin@ridify.test
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Cache MongoDB test binary
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongodb-${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}
+          restore-keys: |
+            mongodb-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate CI environment
+        run: npm run validate-env
+
+      - name: Run API and unit tests
+        run: npm test
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev
+
+  deploy:
+    name: Deploy backend to Render
+    needs: test
+    if: github.ref == 'refs/heads/new-stable' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy hook
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "RENDER_DEPLOY_HOOK_URL is not configured; tests passed and deployment was skipped."
+            exit 0
+          fi
+          curl --fail --silent --show-error --request POST "$RENDER_DEPLOY_HOOK_URL"
