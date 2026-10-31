@@ -15,7 +15,19 @@ class ActivityScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Text('Activity', style: RText.display(size: 24, weight: FontWeight.w700)),
+          Row(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back),
+                color: RColors.ink,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(),
+                onPressed: () => navigate('home'),
+              ),
+              const SizedBox(width: 12),
+              Text('Activity', style: RText.display(size: 24, weight: FontWeight.w700)),
+            ],
+          ),
           const SizedBox(height: 20),
           Text('Your Posted Rides', style: RText.sans(weight: FontWeight.w600)),
           const SizedBox(height: 10),
