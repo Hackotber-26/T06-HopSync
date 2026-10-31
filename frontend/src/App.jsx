@@ -15,6 +15,8 @@ import MapPicker from './screens/MapPicker';
 import Chat from './screens/Chat';
 import DriverCompletion from './screens/DriverCompletion';
 import RiderCompletion from './screens/RiderCompletion';
+import AdminLogin from './screens/AdminLogin';
+import AdminVerify from './screens/AdminVerify';
 import { postedRide, ongoingRide } from './mock/data';
 
 const TABS = new Set(['home', 'activity', 'history', 'profile']);
@@ -73,6 +75,8 @@ export default function App() {
     chat: <Chat onBack={() => setScreen('live')} />,
     driverCompletion: <DriverCompletion navigate={navigate} />,
     riderCompletion: <RiderCompletion navigate={navigate} />,
+    adminLogin: <AdminLogin navigate={navigate} />,
+    adminVerify: <AdminVerify navigate={navigate} />,
   };
 
   const showNav = TABS.has(screen);

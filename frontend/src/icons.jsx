@@ -279,6 +279,13 @@ export const ShieldOutline = ({ size = 20, color = 'currentColor' }) => (
   </svg>
 );
 
+export const UploadGlyph = ({ size = 20, color = 'currentColor' }) => (
+  <svg {...base(size)}>
+    <path d="M12 15V4M8 8l4-4 4 4" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
 export const LockGlyph = ({ size = 18, color = 'currentColor' }) => (
   <svg {...base(size)}>
     <rect x="5" y="10.5" width="14" height="9.5" rx="2" stroke={color} strokeWidth="1.6" />

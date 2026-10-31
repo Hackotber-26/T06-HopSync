@@ -90,6 +90,9 @@ export default function Login({ navigate }) {
             Sign up
           </button>
         </p>
+        <p className="text-center text-sm text-ink-soft/60 mt-6">
+          <button onClick={() => navigate('adminLogin')}>Admin login</button>
+        </p>
       </div>
     </div>
   );
