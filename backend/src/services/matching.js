@@ -1,4 +1,6 @@
 import { nanoid } from 'nanoid';
+import User from '../models/User.js';
+import Group from '../models/Group.js';
 import { findStation, findZone } from '../config/stations.js';
 import { splitFare } from './fare.js';
 
@@ -12,175 +14,162 @@ export function bearingGap(a, b) {
   return d > 180 ? 360 - d : d;
 }
 
-// In-memory store. Fine for a hackathon MVP; swap for a DB later.
-export function createStore(now = () => Date.now()) {
-  const users = new Map();
-  const groups = new Map();
-
-  function createUser({ name, phone, gender, upiId }) {
-    const user = { id: nanoid(10), name, phone, gender, upiId: upiId || null, createdAt: now() };
-    users.set(user.id, user);
-    return user;
-  }
-
-  function groupView(g) {
-    const station = findStation(g.stationId);
-    const riders = g.members.map((m) => {
-      const zone = findZone(station, m.zoneId);
-      return { userId: m.userId, distanceKm: zone.distanceKm };
-    });
-    const fare = splitFare(riders);
-    return {
-      ...g,
-      stationName: station.name,
-      seatsLeft: MAX_SEATS - g.members.length,
-      expiresInMs: Math.max(0, g.expiresAt - now()),
-      fare,
-      members: g.members.map((m) => {
-        const u = users.get(m.userId);
-        return {
-          ...m,
-          name: u?.name,
-          upiId: u?.upiId,
-          zoneName: findZone(station, m.zoneId).name,
-          share: fare.shares.find((s) => s.userId === m.userId),
-        };
-      }),
-    };
-  }
-
-  function isOpen(g) {
-    return g.status === 'open' && g.expiresAt > now() && g.members.length < MAX_SEATS;
-  }
-
-  function activeGroupFor(userId) {
-    for (const g of groups.values()) {
-      if (['open', 'full'].includes(g.status) && g.members.some((m) => m.userId === userId)) return g;
-    }
-    return null;
-  }
-
-  // Score candidate groups: same zone beats same direction; fuller groups first
-  // so autos fill up and leave sooner.
-  function findBestGroup({ stationId, zone, womenOnly, user }) {
-    const station = findStation(stationId);
-    let best = null;
-    for (const g of groups.values()) {
-      if (g.stationId !== stationId || !isOpen(g)) continue;
-      if (g.womenOnly !== womenOnly) continue;
-      if (g.womenOnly && user.gender !== 'female') continue;
-      const gaps = g.members.map((m) => bearingGap(findZone(station, m.zoneId).bearing, zone.bearing));
-      const maxGap = Math.max(...gaps);
-      if (maxGap > BEARING_TOLERANCE) continue;
-      const sameZone = g.members.some((m) => m.zoneId === zone.id);
-      const score = (sameZone ? 100 : 0) + g.members.length * 10 - maxGap;
-      if (!best || score > best.score) best = { g, score };
-    }
-    return best?.g ?? null;
-  }
-
-  function requestRide({ userId, stationId, zoneId, womenOnly = false }) {
-    const user = users.get(userId);
-    if (!user) throw httpError(404, 'User not found');
-    const station = findStation(stationId);
-    const zone = findZone(station, zoneId);
-    if (!station || !zone) throw httpError(400, 'Unknown station or destination');
-    if (womenOnly && user.gender !== 'female') throw httpError(403, 'Women-only pools are for women riders');
-    if (activeGroupFor(userId)) throw httpError(409, 'You are already in a group');
-
-    let group = findBestGroup({ stationId, zone, womenOnly, user });
-    if (!group) {
-      group = {
-        id: nanoid(8),
-        stationId,
-        meetingPoint: station.exits[0],
-        womenOnly,
-        status: 'open',
-        createdAt: now(),
-        expiresAt: now() + WAIT_MS,
-        members: [],
-        messages: [],
-      };
-      groups.set(group.id, group);
-    }
-    group.members.push({ userId, zoneId, joinedAt: now(), paid: false });
-    if (group.members.length >= MAX_SEATS) group.status = 'full';
-    return group;
-  }
-
-  function leaveGroup(groupId, userId) {
-    const g = mustGroup(groupId);
-    g.members = g.members.filter((m) => m.userId !== userId);
-    if (g.members.length === 0) g.status = 'cancelled';
-    else if (g.status === 'full') g.status = 'open';
-    return g;
-  }
-
-  function depart(groupId, userId) {
-    const g = mustGroup(groupId);
-    if (!g.members.some((m) => m.userId === userId)) throw httpError(403, 'Not in this group');
-    g.status = 'departed';
-    g.departedAt = now();
-    return g;
-  }
-
-  function markPaid(groupId, userId) {
-    const g = mustGroup(groupId);
-    const m = g.members.find((x) => x.userId === userId);
-    if (!m) throw httpError(403, 'Not in this group');
-    m.paid = true;
-    return g;
-  }
-
-  function postMessage(groupId, userId, text) {
-    const g = mustGroup(groupId);
-    if (!g.members.some((m) => m.userId === userId)) throw httpError(403, 'Not in this group');
-    const msg = { id: nanoid(8), userId, name: users.get(userId)?.name, text: String(text).slice(0, 300), at: now() };
-    g.messages.push(msg);
-    return g;
-  }
-
-  // Groups that waited out the window with one rider are dissolved;
-  // groups of two or more are flagged ready so they can just leave.
-  function sweepExpired() {
-    const changed = [];
-    for (const g of groups.values()) {
-      if (g.status !== 'open' || g.expiresAt > now()) continue;
-      g.status = g.members.length >= 2 ? 'full' : 'expired';
-      changed.push(g);
-    }
-    return changed;
-  }
-
-  function stationPool(stationId) {
-    return [...groups.values()].filter((g) => g.stationId === stationId && isOpen(g)).map(groupView);
-  }
-
-  function mustGroup(id) {
-    const g = groups.get(id);
-    if (!g) throw httpError(404, 'Group not found');
-    return g;
-  }
-
-  return {
-    users,
-    groups,
-    createUser,
-    requestRide,
-    leaveGroup,
-    depart,
-    markPaid,
-    postMessage,
-    sweepExpired,
-    stationPool,
-    groupView,
-    activeGroupFor,
-    getGroup: mustGroup,
-  };
-}
-
 export function httpError(status, message) {
   const e = new Error(message);
   e.status = status;
   return e;
+}
+
+export async function createUser({ name, phone, gender, upiId }) {
+  const user = await User.create({ name, phone, gender, upiId: upiId || null });
+  return user.toObject({ versionKey: false });
+}
+
+// Attaches the display fields the frontend needs (station name, fare
+// split, member names/zones) to a raw Group document.
+export async function groupView(group) {
+  const station = findStation(group.stationId);
+  const userIds = group.members.map((m) => m.userId);
+  const users = await User.find({ _id: { $in: userIds } }).lean();
+  const byId = Object.fromEntries(users.map((u) => [u._id, u]));
+
+  const riders = group.members.map((m) => ({ userId: m.userId, distanceKm: findZone(station, m.zoneId).distanceKm }));
+  const fare = splitFare(riders);
+
+  return {
+    id: group._id,
+    stationId: group.stationId,
+    stationName: station.name,
+    meetingPoint: group.meetingPoint,
+    womenOnly: group.womenOnly,
+    status: group.status,
+    seatsLeft: MAX_SEATS - group.members.length,
+    expiresInMs: Math.max(0, new Date(group.expiresAt).getTime() - Date.now()),
+    messages: group.messages,
+    fare,
+    members: group.members.map((m) => {
+      const u = byId[m.userId];
+      return {
+        ...m,
+        name: u?.name,
+        upiId: u?.upiId,
+        zoneName: findZone(station, m.zoneId).name,
+        share: fare.shares.find((s) => s.userId === m.userId),
+      };
+    }),
+  };
+}
+
+function isOpen(g) {
+  return g.status === 'open' && new Date(g.expiresAt).getTime() > Date.now() && g.members.length < MAX_SEATS;
+}
+
+export async function activeGroupFor(userId) {
+  return Group.findOne({ status: { $in: ['open', 'full'] }, 'members.userId': userId });
+}
+
+// Score candidate groups: same zone beats same direction; fuller groups
+// first so autos fill up and leave sooner.
+async function findBestGroup({ stationId, zone, womenOnly, user }) {
+  const station = findStation(stationId);
+  const candidates = await Group.find({ stationId, status: 'open', womenOnly });
+  let best = null;
+  for (const g of candidates) {
+    if (!isOpen(g)) continue;
+    if (g.womenOnly && user.gender !== 'female') continue;
+    const gaps = g.members.map((m) => bearingGap(findZone(station, m.zoneId).bearing, zone.bearing));
+    const maxGap = Math.max(...gaps);
+    if (maxGap > BEARING_TOLERANCE) continue;
+    const sameZone = g.members.some((m) => m.zoneId === zone.id);
+    const score = (sameZone ? 100 : 0) + g.members.length * 10 - maxGap;
+    if (!best || score > best.score) best = { g, score };
+  }
+  return best?.g ?? null;
+}
+
+export async function requestRide({ userId, stationId, zoneId, womenOnly = false, waitMs = WAIT_MS }) {
+  const user = await User.findById(userId);
+  if (!user) throw httpError(404, 'User not found');
+  const station = findStation(stationId);
+  const zone = findZone(station, zoneId);
+  if (!station || !zone) throw httpError(400, 'Unknown station or destination');
+  if (womenOnly && user.gender !== 'female') throw httpError(403, 'Women-only pools are for women riders');
+  if (await activeGroupFor(userId)) throw httpError(409, 'You are already in a group');
+
+  let group = await findBestGroup({ stationId, zone, womenOnly, user });
+  if (!group) {
+    group = new Group({
+      stationId,
+      meetingPoint: station.exits[0],
+      womenOnly,
+      status: 'open',
+      expiresAt: new Date(Date.now() + waitMs),
+      members: [],
+      messages: [],
+    });
+  }
+  group.members.push({ userId, zoneId, joinedAt: new Date(), paid: false });
+  if (group.members.length >= MAX_SEATS) group.status = 'full';
+  await group.save();
+  return group;
+}
+
+export async function getGroup(id) {
+  const g = await Group.findById(id);
+  if (!g) throw httpError(404, 'Group not found');
+  return g;
+}
+
+export async function leaveGroup(groupId, userId) {
+  const g = await getGroup(groupId);
+  g.members = g.members.filter((m) => m.userId !== userId);
+  if (g.members.length === 0) g.status = 'cancelled';
+  else if (g.status === 'full') g.status = 'open';
+  await g.save();
+  return g;
+}
+
+export async function depart(groupId, userId) {
+  const g = await getGroup(groupId);
+  if (!g.members.some((m) => m.userId === userId)) throw httpError(403, 'Not in this group');
+  g.status = 'departed';
+  await g.save();
+  return g;
+}
+
+export async function markPaid(groupId, userId) {
+  const g = await getGroup(groupId);
+  const m = g.members.find((x) => x.userId === userId);
+  if (!m) throw httpError(403, 'Not in this group');
+  m.paid = true;
+  await g.save();
+  return g;
+}
+
+export async function postMessage(groupId, userId, text) {
+  const g = await getGroup(groupId);
+  if (!g.members.some((m) => m.userId === userId)) throw httpError(403, 'Not in this group');
+  const user = await User.findById(userId);
+  g.messages.push({ id: nanoid(8), userId, name: user?.name, text: String(text).slice(0, 300), at: new Date() });
+  await g.save();
+  return g;
+}
+
+// Groups that waited out the window with one rider are dissolved; groups
+// of two or more are flagged ready so they can just leave.
+export async function sweepExpired() {
+  const expired = await Group.find({ status: 'open', expiresAt: { $lte: new Date() } });
+  const changed = [];
+  for (const g of expired) {
+    g.status = g.members.length >= 2 ? 'full' : 'expired';
+    await g.save();
+    changed.push(g);
+  }
+  return changed;
+}
+
+export async function stationPool(stationId) {
+  const groups = await Group.find({ stationId, status: 'open' });
+  const open = groups.filter(isOpen);
+  return Promise.all(open.map(groupView));
 }
