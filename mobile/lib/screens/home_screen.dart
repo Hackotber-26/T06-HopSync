@@ -13,18 +13,16 @@ class HomeScreen extends StatelessWidget {
       appBar: BrandHeader(
         trailing: Padding(
           padding: const EdgeInsets.only(right: 12),
-          child: TextButton.icon(
+          child: IconButton(
             onPressed: () => navigate('adminLogin'),
-            icon: const Icon(Icons.admin_panel_settings_outlined, color: Colors.white, size: 18),
-            label: const Text(
-              'Admin',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+            icon: const Icon(Icons.admin_panel_settings_outlined, color: RColors.signalInk, size: 20),
+            style: IconButton.styleFrom(
+              backgroundColor: RColors.signal,
+              padding: const EdgeInsets.all(8),
+              minimumSize: const Size(36, 36),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.white.withValues(alpha: 0.12),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-            ),
+            tooltip: 'Admin',
           ),
         ),
       ),
