@@ -1,12 +1,14 @@
 {
   "name": "ridify-backend",
   "version": "1.0.0",
-  "description": "Ridify backend API â€“ real-time ride-sharing server for students built with Node.js, Express, MongoDB, and Socket.IO.",
-  "main": "server.js",
+  "description": "Ridify backend API – real-time ride-sharing server for students built with Node.js, Express, MongoDB, and Socket.IO.",
+  "main": "src/server.js",
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
-    "test": "node tests/mongodbtest.js"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "test:mongo": "node tests/mongodbtest.cjs"
   },
   "keywords": [
     "ridesharing",
@@ -18,27 +20,20 @@
   ],
   "author": "Priyanshu Sharan & Abdul Khadar D Jamadar",
   "license": "MIT",
-  "homepage": "",
-  "repository": {
-    "type": "git",
-    "url": ""
-  },
-  "bugs": {
-    "url": ""
-  },
   "dependencies": {
     "@turf/turf": "^7.3.5",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1",
+    "express": "^5.3.0",
     "express-rate-limit": "^8.5.2",
     "helmet": "^8.2.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.5.0",
     "morgan": "^1.10.1",
+    "nanoid": "^6.0.2",
     "sanitize-html": "^2.17.4",
-    "socket.io": "^4.8.3",
+    "socket.io": "^4.8.4",
     "winston": "^3.19.0"
   },
   "devDependencies": {
