@@ -1,9 +1,34 @@
 import { useState } from 'react';
 import { CarLogo, MailGlyph, LockGlyph, EyeGlyph, EyeOffGlyph, ShieldOutline } from '../icons';
 import AuthField from '../components/AuthField';
+import { sendOtp, verifyOtp } from '../lib/otp';
 
 export default function Login({ navigate }) {
   const [showPw, setShowPw] = useState(false);
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpStatus, setOtpStatus] = useState(''); // '', 'sending', 'sent', 'error'
+  const [error, setError] = useState('');
+
+  async function handleSendOtp() {
+    if (!email) return setError('Enter your email first.');
+    setError('');
+    setOtpStatus('sending');
+    try {
+      await sendOtp(email);
+      setOtpStatus('sent');
+    } catch {
+      setOtpStatus('error');
+    }
+  }
+
+  function handleSubmit() {
+    if (otp) {
+      const err = verifyOtp(email, otp);
+      if (err) return setError(err);
+    }
+    navigate('home');
+  }
 
   return (
     <div className="min-h-dvh bg-paper flex flex-col justify-center px-6 py-10">
@@ -15,7 +40,13 @@ export default function Login({ navigate }) {
       </div>
 
       <div className="space-y-4">
-        <AuthField icon={<MailGlyph size={20} color="#9CA3AF" />} placeholder="Email" type="email" />
+        <AuthField
+          icon={<MailGlyph size={20} color="#9CA3AF" />}
+          placeholder="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <AuthField
           icon={<LockGlyph size={20} color="#9CA3AF" />}
           placeholder="Password"
@@ -37,15 +68,19 @@ export default function Login({ navigate }) {
           icon={<ShieldOutline size={20} color="#9CA3AF" />}
           placeholder="OTP"
           inputMode="numeric"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
           right={
-            <button className="text-sm font-semibold text-ink-soft shrink-0">Send OTP</button>
+            <button onClick={handleSendOtp} className="text-sm font-semibold text-ink-soft shrink-0" disabled={otpStatus === 'sending'}>
+              {otpStatus === 'sending' ? 'Sending…' : otpStatus === 'sent' ? 'Resend OTP' : 'Send OTP'}
+            </button>
           }
         />
+        {otpStatus === 'sent' && <p className="text-sm text-transit-green -mt-2">OTP sent to {email}.</p>}
+        {otpStatus === 'error' && <p className="text-sm text-transit-coral -mt-2">Couldn't send OTP. Check EmailJS setup.</p>}
+        {error && <p className="text-sm text-transit-coral -mt-2">{error}</p>}
 
-        <button
-          onClick={() => navigate('home')}
-          className="w-full rounded-full bg-ink text-paper font-semibold text-lg py-4 mt-2"
-        >
+        <button onClick={handleSubmit} className="w-full rounded-full bg-ink text-paper font-semibold text-lg py-4 mt-2">
           Log In
         </button>
 
