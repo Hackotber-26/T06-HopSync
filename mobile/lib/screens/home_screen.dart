@@ -10,7 +10,24 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const BrandHeader(),
+      appBar: BrandHeader(
+        trailing: Padding(
+          padding: const EdgeInsets.only(right: 12),
+          child: TextButton.icon(
+            onPressed: () => navigate('adminLogin'),
+            icon: const Icon(Icons.admin_panel_settings_outlined, color: Colors.white, size: 18),
+            label: const Text(
+              'Admin',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+            ),
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.white.withValues(alpha: 0.12),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+          ),
+        ),
+      ),
       backgroundColor: RColors.paper,
       body: ListView(
         padding: const EdgeInsets.all(20),

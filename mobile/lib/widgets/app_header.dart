@@ -3,7 +3,8 @@ import '../theme.dart';
 
 /// Root-tab screens (Home, Rides, History, Account) get the brand mark.
 class BrandHeader extends StatelessWidget implements PreferredSizeWidget {
-  const BrandHeader({super.key});
+  final Widget? trailing;
+  const BrandHeader({super.key, this.trailing});
   @override
   Size get preferredSize => const Size.fromHeight(64);
 
@@ -20,6 +21,7 @@ class BrandHeader extends StatelessWidget implements PreferredSizeWidget {
           const Icon(Icons.directions_car_filled, color: Colors.white, size: 26),
         ],
       ),
+      actions: trailing != null ? [trailing!] : null,
     );
   }
 }
