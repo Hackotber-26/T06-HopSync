@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Ridify design tokens — kept in one place so Flutter matches the web
 /// build exactly: near-white background/cards, ink-navy chrome, a single
@@ -25,21 +24,19 @@ class RColors {
 
 class RText {
   static TextStyle display({double size = 20, FontWeight weight = FontWeight.w700, Color color = RColors.ink}) =>
-      GoogleFonts.spaceGrotesk(fontSize: size, fontWeight: weight, color: color);
+      TextStyle(fontSize: size, fontWeight: weight, color: color);
 
   static TextStyle sans({double size = 15, FontWeight weight = FontWeight.w400, Color color = RColors.ink}) =>
-      GoogleFonts.ibmPlexSans(fontSize: size, fontWeight: weight, color: color);
+      TextStyle(fontSize: size, fontWeight: weight, color: color);
 
   static TextStyle mono({double size = 15, FontWeight weight = FontWeight.w500, Color color = RColors.ink}) =>
-      GoogleFonts.ibmPlexMono(fontSize: size, fontWeight: weight, color: color);
+      TextStyle(fontSize: size, fontWeight: weight, color: color, fontFamily: 'monospace');
 }
 
 ThemeData ridifyTheme() {
   return ThemeData(
     useMaterial3: true,
     scaffoldBackgroundColor: RColors.paper,
-    fontFamily: GoogleFonts.ibmPlexSans().fontFamily,
     colorScheme: ColorScheme.fromSeed(seedColor: RColors.ink, surface: RColors.paper),
-    textTheme: GoogleFonts.ibmPlexSansTextTheme(),
   );
 }
