@@ -138,24 +138,14 @@ class _RideDetailScreenState extends State<RideDetailScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            if (decision == 'accepted') ...[
+            if (decision == 'accepted')
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(color: RColors.greenSoft, borderRadius: BorderRadius.circular(24)),
                 alignment: Alignment.center,
                 child: const Text('Accepted', style: TextStyle(color: RColors.green, fontWeight: FontWeight.w700)),
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: () => widget.navigate('live', role: 'driver'),
-                  style: FilledButton.styleFrom(backgroundColor: RColors.ink, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24))),
-                  child: Text('Start trip with ${r.name}'),
-                ),
-              ),
-            ] else if (decision == 'declined')
+              ) else if (decision == 'declined')
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 10),
