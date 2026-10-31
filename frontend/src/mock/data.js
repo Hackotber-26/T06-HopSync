@@ -14,15 +14,6 @@ export const homeStats = {
   totalSpending: 100,
 };
 
-export const upcomingRide = {
-  time: 'Today, 6:30 PM',
-  from: 'Koramangala Metro',
-  to: 'Electronic City',
-  seatsFilled: 3,
-  seatsTotal: 4,
-  role: "You're driving",
-};
-
 export const availableRides = [
   {
     id: 'r1',

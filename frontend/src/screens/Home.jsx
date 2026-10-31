@@ -1,6 +1,6 @@
 import { BrandHeader } from '../components/AppHeader';
-import { me, homeStats, upcomingRide } from '../mock/data';
-import { CarGlyph, SearchGlyph, ShieldGlyph, ChevronRight } from '../icons';
+import { me, homeStats } from '../mock/data';
+import { CarGlyph, SearchGlyph, ShieldGlyph } from '../icons';
 
 export default function Home({ navigate }) {
   return (
@@ -63,36 +63,6 @@ export default function Home({ navigate }) {
             </p>
           </div>
         </div>
-
-        <section>
-          <div className="flex items-center justify-between mb-2">
-            <p className="font-semibold text-[15px]">Upcoming Ride</p>
-            <button onClick={() => navigate('activity')} className="text-sm" style={{ color: '#2F7DD9' }}>
-              View All
-            </button>
-          </div>
-          <button
-            onClick={() => navigate('live')}
-            className="w-full border border-rule rounded-2xl p-4 flex items-center gap-3 text-left bg-paper-raised"
-          >
-            <div className="w-10 h-10 rounded-xl bg-paper flex items-center justify-center shrink-0">📅</div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm text-ink-soft">{upcomingRide.time}</p>
-              <p className="font-medium text-[15px] mt-0.5 truncate">
-                {upcomingRide.from} → {upcomingRide.to}
-              </p>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="text-xs px-2 py-0.5 rounded-full bg-transit-green-soft text-transit-green">
-                  {upcomingRide.role}
-                </span>
-                <span className="text-xs text-ink-soft">
-                  {upcomingRide.seatsFilled}/{upcomingRide.seatsTotal} seats
-                </span>
-              </div>
-            </div>
-            <ChevronRight color="var(--color-ink-soft)" />
-          </button>
-        </section>
       </div>
     </div>
   );

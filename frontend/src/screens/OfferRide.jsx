@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavHeader } from '../components/AppHeader';
-import { PinGreen, FlagRed, MapGlyph, SwapGlyph, CalendarGlyph, ClockGlyph, BikeGlyph, CarGlyph, SuvGlyph } from '../icons';
+import ScheduleField from '../components/ScheduleField';
+import { PinGreen, FlagRed, MapGlyph, SwapGlyph, BikeGlyph, CarGlyph, SuvGlyph } from '../icons';
 
 const FLEX = [
   { id: 'nonstop', label: 'Nonstop', hint: 'Exact pickup and drop only' },
@@ -71,19 +72,7 @@ export default function OfferRide({ navigate }) {
           </div>
         </section>
 
-        <section>
-          <p className="font-semibold mb-3">Schedule</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <CalendarGlyph color="var(--color-ink-soft)" />
-              dd/mm/yyyy
-            </div>
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <ClockGlyph color="var(--color-ink-soft)" />
-              --:--
-            </div>
-          </div>
-        </section>
+        <ScheduleField />
 
         <section>
           <div className="flex items-center justify-between mb-3">

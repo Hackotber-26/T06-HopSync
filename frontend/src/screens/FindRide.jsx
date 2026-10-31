@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavHeader } from '../components/AppHeader';
-import { PinGreen, FlagRed, MapGlyph, SwapGlyph, CalendarGlyph, ClockGlyph } from '../icons';
+import ScheduleField from '../components/ScheduleField';
+import { PinGreen, FlagRed, MapGlyph, SwapGlyph } from '../icons';
 
 const SEAT_OPTIONS = [1, 2, 3, 4, 5, 6];
 
@@ -42,19 +43,7 @@ export default function FindRide({ navigate }) {
           <p className="text-sm text-ink-soft mt-2">Searching within {radius.toFixed(1)} km of your radius</p>
         </section>
 
-        <section>
-          <p className="font-semibold mb-3">Schedule</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <CalendarGlyph color="var(--color-ink-soft)" />
-              dd/mm/yyyy
-            </div>
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <ClockGlyph color="var(--color-ink-soft)" />
-              --:--
-            </div>
-          </div>
-        </section>
+        <ScheduleField />
 
         <section>
           <div className="flex items-center justify-between mb-3">
