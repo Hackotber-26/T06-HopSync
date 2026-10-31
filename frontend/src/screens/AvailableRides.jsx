@@ -54,7 +54,7 @@ export default function AvailableRides({ navigate }) {
 
         <div className="space-y-4">
           {rides.map((r) => (
-            <RideCard key={r.id} ride={r} onBook={() => navigate('live')} />
+            <RideCard key={r.id} ride={r} onBook={() => navigate('live', { role: 'rider' })} />
           ))}
           {rides.length === 0 && <p className="text-center text-ink-soft py-8">No {filter} rides nearby right now.</p>}
         </div>

@@ -40,7 +40,7 @@ export default function Activity({ navigate }) {
         <section>
           <p className="font-semibold mb-3">Ongoing Rides</p>
           <button
-            onClick={() => navigate('live')}
+            onClick={() => navigate('live', { role: 'rider' })}
             className="w-full border border-rule rounded-2xl bg-paper-raised p-4 text-left"
           >
             <div className="flex items-start justify-between">

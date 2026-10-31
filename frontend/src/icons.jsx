@@ -236,6 +236,24 @@ export const MailGlyph = ({ size = 18, color = 'currentColor' }) => (
   </svg>
 );
 
+export const StarGlyph = ({ size = 28, color = 'currentColor', filled = false }) => (
+  <svg {...base(size)}>
+    <path
+      d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9L12 3Z"
+      fill={filled ? color : 'none'}
+      stroke={color}
+      strokeWidth="1.7"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const SendGlyph = ({ size = 18, color = 'currentColor' }) => (
+  <svg {...base(size)}>
+    <path d="M4 12 20 4l-6 16-2.5-6.5L4 12Z" stroke={color} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
+  </svg>
+);
+
 export const LockGlyph = ({ size = 18, color = 'currentColor' }) => (
   <svg {...base(size)}>
     <rect x="5" y="10.5" width="14" height="9.5" rx="2" stroke={color} strokeWidth="1.6" />

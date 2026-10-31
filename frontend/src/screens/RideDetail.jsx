@@ -51,7 +51,13 @@ export default function RideDetail({ navigate }) {
           <p className="font-semibold mb-3">Requests</p>
           <div className="space-y-4">
             {rideRequests.map((r) => (
-              <RequestCard key={r.id} r={r} decision={decided[r.id]} onDecide={(d) => setDecided({ ...decided, [r.id]: d })} />
+              <RequestCard
+                key={r.id}
+                r={r}
+                decision={decided[r.id]}
+                onDecide={(d) => setDecided({ ...decided, [r.id]: d })}
+                onStartTrip={() => navigate('live', { role: 'driver' })}
+              />
             ))}
           </div>
         </section>
@@ -60,7 +66,7 @@ export default function RideDetail({ navigate }) {
   );
 }
 
-function RequestCard({ r, decision, onDecide }) {
+function RequestCard({ r, decision, onDecide, onStartTrip }) {
   return (
     <div className="border border-rule rounded-2xl bg-paper-raised p-4">
       <div className="flex items-start justify-between">
@@ -100,14 +106,15 @@ function RequestCard({ r, decision, onDecide }) {
         </div>
       </div>
 
-      {decision ? (
-        <p
-          className={`mt-3 text-center font-semibold py-2.5 rounded-full ${
-            decision === 'accepted' ? 'text-transit-green bg-transit-green-soft' : 'text-transit-coral bg-transit-coral-soft'
-          }`}
-        >
-          {decision === 'accepted' ? 'Accepted' : 'Declined'}
-        </p>
+      {decision === 'accepted' ? (
+        <div className="mt-3 space-y-2">
+          <p className="text-center font-semibold py-2.5 rounded-full text-transit-green bg-transit-green-soft">Accepted</p>
+          <button onClick={onStartTrip} className="w-full rounded-full bg-ink text-paper font-semibold py-2.5">
+            Start trip with {r.name}
+          </button>
+        </div>
+      ) : decision === 'declined' ? (
+        <p className="mt-3 text-center font-semibold py-2.5 rounded-full text-transit-coral bg-transit-coral-soft">Declined</p>
       ) : (
         <div className="grid grid-cols-2 gap-3 mt-3">
           <button
