@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 /*
-  Ridify design tokens — grounded in Bengaluru transit signage:
-  warm paper background, an ink-navy chrome, transit-amber for the one
-  thing worth tapping, and desaturated metro-line colors used only as
-  small identifiers, never as the page accent.
+  Ridify design tokens — near-white background and cards, an ink-navy
+  chrome, transit-amber for the one thing worth tapping, and desaturated
+  metro-line colors used only as small identifiers, never as the page
+  accent.
 */
 @theme {
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -13,9 +13,9 @@
 
   --color-ink: #14171c;
   --color-ink-soft: #52555c;
-  --color-paper: #f6f4ee;
-  --color-paper-raised: #fffdf8;
-  --color-rule: #d8d3c4;
+  --color-paper: #f7f7f8;
+  --color-paper-raised: #ffffff;
+  --color-rule: #e5e5e7;
   --color-signal: #ffc43d;
   --color-signal-ink: #3a2a00;
   --color-transit-green: #1f8a5f;
