@@ -34,28 +34,20 @@ class HomeScreen extends StatelessWidget {
           const SizedBox(height: 4),
           Text("Let's make your commute better together.", style: RText.sans(color: RColors.inkSoft)),
           const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: _actionCard(
-                  dark: true,
-                  icon: Icons.directions_car,
-                  title: 'Offer a Ride',
-                  subtitle: 'Share your journey',
-                  onTap: () => navigate('offerRide'),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _actionCard(
-                  dark: false,
-                  icon: Icons.search,
-                  title: 'Find a Ride',
-                  subtitle: "Get where you're headed",
-                  onTap: () => navigate('findRide'),
-                ),
-              ),
-            ],
+          _actionCard(
+            dark: true,
+            icon: Icons.directions_car,
+            title: 'Offer a Ride',
+            subtitle: 'Share your journey',
+            onTap: () => navigate('offerRide'),
+          ),
+          const SizedBox(height: 12),
+          _actionCard(
+            dark: false,
+            icon: Icons.search,
+            title: 'Find a Ride',
+            subtitle: "Get where you're headed",
+            onTap: () => navigate('findRide'),
           ),
           const SizedBox(height: 12),
           Row(
@@ -98,21 +90,34 @@ class HomeScreen extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
       child: Container(
-        padding: const EdgeInsets.all(16),
-        height: 150,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         decoration: BoxDecoration(
           color: dark ? RColors.ink : RColors.paperRaised,
           borderRadius: BorderRadius.circular(18),
           border: dark ? null : Border.all(color: RColors.rule),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Icon(icon, color: dark ? Colors.white : RColors.ink, size: 24),
-            const Spacer(),
-            Text(title, style: TextStyle(color: dark ? Colors.white : RColors.ink, fontWeight: FontWeight.w700, fontSize: 15)),
-            const SizedBox(height: 2),
-            Text(subtitle, style: TextStyle(color: dark ? Colors.white60 : RColors.inkSoft, fontSize: 13)),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: dark ? Colors.white.withValues(alpha: 0.12) : RColors.paper,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(icon, color: dark ? Colors.white : RColors.ink, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(color: dark ? Colors.white : RColors.ink, fontWeight: FontWeight.w700, fontSize: 16)),
+                  const SizedBox(height: 2),
+                  Text(subtitle, style: TextStyle(color: dark ? Colors.white70 : RColors.inkSoft, fontSize: 13)),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right, color: dark ? Colors.white54 : RColors.inkSoft),
           ],
         ),
       ),
