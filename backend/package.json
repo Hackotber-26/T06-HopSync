@@ -1,7 +1,7 @@
 {
   "name": "ridify-backend",
   "version": "1.0.0",
-  "description": "Ridify backend API – real-time ride-sharing server for students built with Node.js, Express, MongoDB, and Socket.IO.",
+  "description": "Ridify backend API â€“ real-time ride-sharing server for students built with Node.js, Express, MongoDB, and Socket.IO.",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
