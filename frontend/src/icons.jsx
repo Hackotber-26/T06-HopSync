@@ -254,6 +254,31 @@ export const SendGlyph = ({ size = 18, color = 'currentColor' }) => (
   </svg>
 );
 
+export const EyeOffGlyph = ({ size = 20, color = 'currentColor' }) => (
+  <svg {...base(size)}>
+    <path
+      d="M3 3l18 18M10.6 5.2A10.6 10.6 0 0 1 12 5c5 0 9 3.5 10 7-.4 1.3-1.2 2.6-2.2 3.7M7 7.4C4.8 8.7 3.2 10.6 2 12c1 3.5 5 7 10 7 1.4 0 2.7-.3 3.9-.7M9.9 9.9a3 3 0 0 0 4.2 4.2"
+      stroke={color}
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+export const EyeGlyph = ({ size = 20, color = 'currentColor' }) => (
+  <svg {...base(size)}>
+    <path d="M2 12c1-3.5 5-7 10-7s9 3.5 10 7c-1 3.5-5 7-10 7s-9-3.5-10-7Z" stroke={color} strokeWidth="1.7" strokeLinejoin="round" />
+    <circle cx="12" cy="12" r="3" stroke={color} strokeWidth="1.7" />
+  </svg>
+);
+
+export const ShieldOutline = ({ size = 20, color = 'currentColor' }) => (
+  <svg {...base(size)}>
+    <path d="M12 3.5 5 6v5.5c0 4.6 3 7.8 7 9 4-1.2 7-4.4 7-9V6l-7-2.5Z" stroke={color} strokeWidth="1.6" strokeLinejoin="round" />
+  </svg>
+);
+
 export const LockGlyph = ({ size = 18, color = 'currentColor' }) => (
   <svg {...base(size)}>
     <rect x="5" y="10.5" width="14" height="9.5" rx="2" stroke={color} strokeWidth="1.6" />

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import BottomNav from './components/BottomNav';
+import Login from './screens/Login';
+import Signup from './screens/Signup';
 import Home from './screens/Home';
 import FindRide from './screens/FindRide';
 import AvailableRides from './screens/AvailableRides';
@@ -18,7 +20,7 @@ import { postedRide, ongoingRide } from './mock/data';
 const TABS = new Set(['home', 'activity', 'history', 'profile']);
 
 export default function App() {
-  const [screen, setScreen] = useState('home');
+  const [screen, setScreen] = useState('login');
   const [liveRole, setLiveRole] = useState('rider');
   const [locations, setLocations] = useState({ pickup: '', destination: '' });
   const [picker, setPicker] = useState({ field: 'pickup', from: 'findRide' });
@@ -52,6 +54,8 @@ export default function App() {
   }
 
   const screens = {
+    login: <Login navigate={navigate} />,
+    signup: <Signup navigate={navigate} />,
     home: <Home navigate={navigate} />,
     findRide: (
       <FindRide navigate={navigate} locations={locations} onPickLocation={openPicker} onSwapLocations={swapLocations} />
@@ -63,7 +67,7 @@ export default function App() {
     activity: <Activity navigate={navigate} />,
     rideDetail: <RideDetail navigate={navigate} />,
     history: <History navigate={navigate} />,
-    profile: <Profile onLogout={() => navigate('home')} />,
+    profile: <Profile onLogout={() => navigate('login')} />,
     live: <LiveRide navigate={navigate} role={liveRole} />,
     mapPicker: <MapPicker field={picker.field} onBack={() => setScreen(picker.from)} onConfirm={confirmLocation} />,
     chat: <Chat onBack={() => setScreen('live')} />,
