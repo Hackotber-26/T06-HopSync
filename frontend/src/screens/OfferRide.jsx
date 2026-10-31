@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { NavHeader } from '../components/AppHeader';
-import { PinGreen, FlagRed, MapGlyph, SwapGlyph, CalendarGlyph, ClockGlyph, BikeGlyph, CarGlyph, SuvGlyph } from '../icons';
+import ScheduleField from '../components/ScheduleField';
+import LocationFields from '../components/LocationFields';
+import { BikeGlyph, CarGlyph, SuvGlyph } from '../icons';
 
 const FLEX = [
   { id: 'nonstop', label: 'Nonstop', hint: 'Exact pickup and drop only' },
@@ -14,7 +16,7 @@ const VEHICLES = [
 ];
 const SEAT_OPTIONS = [1, 2, 3, 4];
 
-export default function OfferRide({ navigate }) {
+export default function OfferRide({ navigate, locations, onPickLocation, onSwapLocations }) {
   const [flex, setFlex] = useState('nonstop');
   const [vehicle, setVehicle] = useState('Sedan');
   const [seats, setSeats] = useState(1);
@@ -24,17 +26,12 @@ export default function OfferRide({ navigate }) {
     <div>
       <NavHeader title="Offer a Ride" onBack={() => navigate('home')} />
       <div className="px-5 py-5 space-y-6">
-        <div className="relative border border-rule rounded-2xl bg-paper-raised">
-          <LocationRow icon={<PinGreen />} placeholder="Your Pickup Location" />
-          <div className="border-t border-rule" />
-          <LocationRow icon={<FlagRed />} placeholder="Your Destination" />
-          <button
-            aria-label="Swap locations"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-paper-raised border border-rule rounded-full w-9 h-9 flex items-center justify-center"
-          >
-            <SwapGlyph />
-          </button>
-        </div>
+        <LocationFields
+          pickup={locations.pickup}
+          destination={locations.destination}
+          onPick={(field) => onPickLocation(field, 'offerRide')}
+          onSwap={onSwapLocations}
+        />
 
         <section>
           <p className="font-semibold">Route Flexibility</p>
@@ -71,19 +68,7 @@ export default function OfferRide({ navigate }) {
           </div>
         </section>
 
-        <section>
-          <p className="font-semibold mb-3">Schedule</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <CalendarGlyph color="var(--color-ink-soft)" />
-              dd/mm/yyyy
-            </div>
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <ClockGlyph color="var(--color-ink-soft)" />
-              --:--
-            </div>
-          </div>
-        </section>
+        <ScheduleField />
 
         <section>
           <div className="flex items-center justify-between mb-3">
@@ -120,16 +105,6 @@ export default function OfferRide({ navigate }) {
           Offer Ride
         </button>
       </div>
-    </div>
-  );
-}
-
-function LocationRow({ icon, placeholder }) {
-  return (
-    <div className="flex items-center gap-3 px-4 py-3.5">
-      {icon}
-      <input className="flex-1 bg-transparent outline-none text-[15px] placeholder:text-ink-soft" placeholder={placeholder} />
-      <MapGlyph color="var(--color-ink-soft)" />
     </div>
   );
 }

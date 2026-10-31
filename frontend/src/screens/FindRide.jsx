@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { NavHeader } from '../components/AppHeader';
-import { PinGreen, FlagRed, MapGlyph, SwapGlyph, CalendarGlyph, ClockGlyph } from '../icons';
+import ScheduleField from '../components/ScheduleField';
+import LocationFields from '../components/LocationFields';
 
 const SEAT_OPTIONS = [1, 2, 3, 4, 5, 6];
 
-export default function FindRide({ navigate }) {
+export default function FindRide({ navigate, locations, onPickLocation, onSwapLocations }) {
   const [radius, setRadius] = useState(1.0);
   const [seats, setSeats] = useState(1);
 
@@ -12,17 +13,12 @@ export default function FindRide({ navigate }) {
     <div>
       <NavHeader title="Find a Ride" onBack={() => navigate('home')} />
       <div className="px-5 py-5 space-y-6">
-        <div className="relative border border-rule rounded-2xl bg-paper-raised">
-          <LocationRow icon={<PinGreen />} placeholder="Your Pickup Location" />
-          <div className="border-t border-rule" />
-          <LocationRow icon={<FlagRed />} placeholder="Your Destination" />
-          <button
-            aria-label="Swap locations"
-            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-paper-raised border border-rule rounded-full w-9 h-9 flex items-center justify-center"
-          >
-            <SwapGlyph />
-          </button>
-        </div>
+        <LocationFields
+          pickup={locations.pickup}
+          destination={locations.destination}
+          onPick={(field) => onPickLocation(field, 'findRide')}
+          onSwap={onSwapLocations}
+        />
 
         <section>
           <p className="font-semibold mb-3">Search Radius</p>
@@ -42,19 +38,7 @@ export default function FindRide({ navigate }) {
           <p className="text-sm text-ink-soft mt-2">Searching within {radius.toFixed(1)} km of your radius</p>
         </section>
 
-        <section>
-          <p className="font-semibold mb-3">Schedule</p>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <CalendarGlyph color="var(--color-ink-soft)" />
-              dd/mm/yyyy
-            </div>
-            <div className="field flex items-center gap-2 text-ink-soft">
-              <ClockGlyph color="var(--color-ink-soft)" />
-              --:--
-            </div>
-          </div>
-        </section>
+        <ScheduleField />
 
         <section>
           <div className="flex items-center justify-between mb-3">
@@ -83,16 +67,6 @@ export default function FindRide({ navigate }) {
           Search Rides
         </button>
       </div>
-    </div>
-  );
-}
-
-function LocationRow({ icon, placeholder }) {
-  return (
-    <div className="flex items-center gap-3 px-4 py-3.5">
-      {icon}
-      <input className="flex-1 bg-transparent outline-none text-[15px] placeholder:text-ink-soft" placeholder={placeholder} />
-      <MapGlyph color="var(--color-ink-soft)" />
     </div>
   );
 }

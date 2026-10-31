@@ -1,8 +1,15 @@
 import { NavHeader } from '../components/AppHeader';
-import { liveRide } from '../mock/data';
+import { liveRide, rideRequests } from '../mock/data';
 import { LocateGlyph, CompassGlyph, ChatGlyph, CheckBadge } from '../icons';
 
-export default function LiveRide({ navigate }) {
+// Same screen serves both sides of a ride: a rider booked from Available
+// Rides sees the driver's card; a driver who started a trip from Ride
+// Detail sees their accepted passenger's card instead.
+export default function LiveRide({ navigate, role = 'rider' }) {
+  const isDriver = role === 'driver';
+  const counterpart = isDriver ? rideRequests[0].name : liveRide.driver;
+  const status = isDriver ? 'Heading to pickup' : liveRide.status;
+
   return (
     <div className="flex flex-col h-full min-h-dvh">
       <NavHeader title="Live Ride Map" onBack={() => navigate('activity')} />
@@ -21,7 +28,7 @@ export default function LiveRide({ navigate }) {
 
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-[85%]">
           <span className="bg-white rounded-lg px-2.5 py-1 text-xs font-semibold shadow whitespace-nowrap">
-            {liveRide.driver} (Driver)
+            {counterpart} {isDriver ? '(Passenger)' : '(Driver)'}
           </span>
         </div>
       </div>
@@ -31,14 +38,14 @@ export default function LiveRide({ navigate }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-ink text-paper flex items-center justify-center font-semibold">
-              {liveRide.driver[0]}
+              {counterpart[0]}
             </div>
             <div>
               <p className="font-semibold flex items-center gap-1.5">
-                {liveRide.driver} <CheckBadge size={15} />
+                {counterpart} <CheckBadge size={15} />
               </p>
               <span className="inline-flex items-center gap-1.5 text-sm text-transit-green bg-transit-green-soft rounded-full px-2.5 py-0.5 mt-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-transit-green inline-block" /> {liveRide.status}
+                <span className="w-1.5 h-1.5 rounded-full bg-transit-green inline-block" /> {status}
               </span>
             </div>
           </div>
@@ -47,9 +54,20 @@ export default function LiveRide({ navigate }) {
           </button>
         </div>
 
-        <button className="w-full mt-4 rounded-full bg-ink text-paper font-semibold py-3.5 flex items-center justify-center gap-2">
-          <ChatGlyph color="#fff" /> Chat
-        </button>
+        <div className="grid grid-cols-2 gap-3 mt-4">
+          <button
+            onClick={() => navigate('chat')}
+            className="rounded-full border border-ink text-ink font-semibold py-3.5 flex items-center justify-center gap-2"
+          >
+            <ChatGlyph /> Chat
+          </button>
+          <button
+            onClick={() => navigate(isDriver ? 'driverCompletion' : 'riderCompletion')}
+            className="rounded-full bg-ink text-paper font-semibold py-3.5"
+          >
+            End Ride
+          </button>
+        </div>
       </div>
     </div>
   );
