@@ -4,8 +4,7 @@
 const mongoose = require('mongoose');
 const { version } = require('../package.json');
 
-const APP_URL = 'https://ridify.onrender.com';
-const REPO_URL = 'https://github.com/priyanshusharan-cmd/ridify';
+const REPO_URL = 'https://github.com/Hackotber-26/T06-HopSync';
 const REFRESH_SECONDS = 30;
 // Stop after this many reloads so a forgotten tab can't keep the free Render
 // instance awake (it only sleeps after 15 min with no inbound requests).
@@ -300,6 +299,7 @@ ${refreshing ? `<meta http-equiv="refresh" content="${REFRESH_SECONDS};url=/?r=$
   .btn:hover { transform: translateY(-1px); }
   .btn.primary { background: #fff; color: #000; }
   .btn.primary:hover { background: #E0E0E0; }
+  .btn.disabled { cursor: not-allowed; opacity: .45; pointer-events: none; }
   .btn.ghost { color: #fff; border: 1px solid var(--surface-2); }
   .btn.ghost:hover { background: var(--surface); }
   .btn .arrow { transition: transform .2s; }
@@ -362,7 +362,7 @@ ${refreshing ? `<meta http-equiv="refresh" content="${REFRESH_SECONDS};url=/?r=$
   </div>
 
   <div class="actions rise" style="animation-delay:.75s">
-    <a class="btn primary" href="${APP_URL}">Open Ridify <span class="arrow">→</span></a>
+    <a class="btn primary disabled" aria-disabled="true" tabindex="-1">Open Ridify <span class="arrow">→</span></a>
     <a class="btn ghost" href="${REPO_URL}">View on GitHub</a>
   </div>
 </main>

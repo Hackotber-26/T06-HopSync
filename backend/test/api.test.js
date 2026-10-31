@@ -96,6 +96,9 @@ describe('public API and security middleware', () => {
 
     const statusPage = await request(appServer).get('/').expect(200);
     assert.match(statusPage.text, /Ridify/);
+    assert.match(statusPage.text, /href="https:\/\/github\.com\/Hackotber-26\/T06-HopSync">View on GitHub/);
+    assert.match(statusPage.text, /class="btn primary disabled" aria-disabled="true"/);
+    assert.doesNotMatch(statusPage.text, /href="https:\/\/ridify\.onrender\.com"/);
 
     await request(appServer).get('/static/logo.png').expect(200).expect('Content-Type', /image\/png/);
   });
