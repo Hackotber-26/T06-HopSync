@@ -34,35 +34,45 @@ class _RideDetailScreenState extends State<RideDetailScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(color: RColors.paperRaised, borderRadius: BorderRadius.circular(18), border: Border.all(color: RColors.rule)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Icon(Icons.airport_shuttle),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('${PostedRide.seatsTotal} Seats', style: const TextStyle(fontWeight: FontWeight.w700)),
-                          Text('${PostedRide.date} · ${PostedRide.time}', style: RText.sans(size: 13, color: RColors.inkSoft)),
-                          Text(PostedRide.mode, style: RText.sans(size: 13, color: RColors.inkSoft)),
-                        ],
+          InkWell(
+            onTap: () => widget.navigate('live', role: 'driver'),
+            borderRadius: BorderRadius.circular(18),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(color: RColors.paperRaised, borderRadius: BorderRadius.circular(18), border: Border.all(color: RColors.rule)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.airport_shuttle),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${PostedRide.seatsTotal} Seats', style: const TextStyle(fontWeight: FontWeight.w700)),
+                            Text('${PostedRide.date} · ${PostedRide.time}', style: RText.sans(size: 13, color: RColors.inkSoft)),
+                            Text(PostedRide.mode, style: RText.sans(size: 13, color: RColors.inkSoft)),
+                          ],
+                        ),
                       ),
-                    ),
-                    InkWell(onTap: () => widget.navigate('activity'), child: const Icon(Icons.close, color: RColors.inkSoft)),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                Row(children: [const Icon(Icons.circle, size: 10, color: RColors.green), const SizedBox(width: 10), Text(PostedRide.from, style: const TextStyle(fontWeight: FontWeight.w600))]),
-                const SizedBox(height: 4),
-                Row(children: [const Icon(Icons.circle, size: 10, color: RColors.coral), const SizedBox(width: 10), Text(PostedRide.to, style: const TextStyle(fontWeight: FontWeight.w600))]),
-              ],
+                      InkWell(
+                        onTap: () => widget.navigate('activity'),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(Icons.close, color: RColors.inkSoft),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Row(children: [const Icon(Icons.circle, size: 10, color: RColors.green), const SizedBox(width: 10), Text(PostedRide.from, style: const TextStyle(fontWeight: FontWeight.w600))]),
+                  const SizedBox(height: 4),
+                  Row(children: [const Icon(Icons.circle, size: 10, color: RColors.coral), const SizedBox(width: 10), Text(PostedRide.to, style: const TextStyle(fontWeight: FontWeight.w600))]),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 24),
