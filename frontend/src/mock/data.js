@@ -101,6 +101,28 @@ export const historyRides = [
     duration: '14 mins',
     distanceKm: 5.5,
     passengers: 2,
+    passengersList: [
+      {
+        id: 'p1',
+        name: 'Prerit Gupta',
+        email: 'prerit@gmail.com',
+        seats: 1,
+        fare: 100,
+        pickup: 'MG Road Metro',
+        drop: 'Sony World Junction',
+        verified: true,
+      },
+      {
+        id: 'p2',
+        name: 'Saket Sharan',
+        email: 'saket@gmail.com',
+        seats: 1,
+        fare: 100,
+        pickup: 'Trinity Circle',
+        drop: 'Koramangala 5th Block',
+        verified: true,
+      },
+    ],
   },
   {
     id: 'h2',
@@ -113,6 +135,28 @@ export const historyRides = [
     duration: '9 mins',
     distanceKm: 3.5,
     passengers: 2,
+    passengersList: [
+      {
+        id: 'p3',
+        name: 'Rohit Verma',
+        email: 'rohit.v@gmail.com',
+        seats: 1,
+        fare: 45,
+        pickup: 'Nagasandra Metro Gate 2',
+        drop: 'Peenya 1st Stage',
+        verified: true,
+      },
+      {
+        id: 'p4',
+        name: 'Sneha Patel',
+        email: 'sneha.p@outlook.com',
+        seats: 1,
+        fare: 45,
+        pickup: 'Nagasandra Metro Gate 1',
+        drop: 'Peenya Industrial Area',
+        verified: true,
+      },
+    ],
   },
 ];
 
